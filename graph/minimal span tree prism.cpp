@@ -20,30 +20,35 @@ int main(){
 	adj[4].push_back({2,7});
 	
     int parent[N],key[N];
-    priority_queue<pair<int,int>,vector<pair<int,int>>, greater<pair<int,int>>> pq;
-    set<int> mst;
+    unordered_set<int> mst;
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
     
     memset(key,INT_MAX,N);
+    parent[0] = -1;
+    key[0]= 0;
     pq.push({0,0});
-    key[0] = 0;
-    parent[0]= -1;
     
     while(!pq.empty()){
         int node = pq.top().second;
         pq.pop();
         mst.insert(node);
         
-        for(auto next: adj[node]){
-            if(mst.find(next.first)==mst.end() && key[next.first]>next.second){
-                key[next.first]=next.second;
-                parent[next.first]=node;
-                pq.push({next.second,next.first});
+        for(auto p: adj[node]){
+            int next = p.first;
+            int wt = p.second;
+            if(mst.find(next)==mst.end()){
+                if(wt<key[next]){
+                    parent[next] = node;
+                    key[next] = wt;
+                    pq.push({wt,next});
+                }
             }
         }
     }
     
-    for (int i = 1; i < N; i++) 
-        cout << parent[i] << " - " << i <<" \n";
+    for(int i=0;i<N;i++){
+        cout<<i<<" -> "<<parent[i]<<endl;
+    }
     
 	return 0;
 }
